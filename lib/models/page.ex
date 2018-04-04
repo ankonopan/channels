@@ -1,4 +1,5 @@
 defmodule Channels.Model.Page do
+  alias __MODULE__
   use ChannelsWeb, :document
   require Logger
 
@@ -7,6 +8,7 @@ defmodule Channels.Model.Page do
     field :title, :string
     field :meta_title, :string
     field :content, :string
+    field :site_id, :string
   end
 
   @doc """
@@ -14,9 +16,12 @@ defmodule Channels.Model.Page do
 
 
   """
-  def changeset(params \\ %{}) do
-    %Channels.Model.Page{}
-      |> cast(params, [:title, :meta_title, :content])
-      |> validate_required([:title, :content])
+  @allowed_params [:title, :meta_title, :content, :site_id]
+  @required_params [:title, :content, :site_id]
+
+  def changeset(params) do
+    %Page{}
+      |> cast(params, @allowed_params)
+      |> validate_required(@required_params)
   end
 end
