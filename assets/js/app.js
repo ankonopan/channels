@@ -19,3 +19,26 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 import socket from "./socket"
+import {pages} from "./data/pages"
+
+class PageChannel {
+  constructor(socket){
+    this.channel = socket.channel("pages", {token: "something"})
+    this.channel.on("new_msg", msg => console.log("Got message", msg))
+    this.channel.join()
+     .receive("ok", (data) => console.log("catching up", data) )
+     .receive("error", (reason) => console.log("failed join", reason) )
+     .receive("timeout", () => console.log("Networking issue. Still waiting...") )
+
+    this.channel.on('page_new', (message) => {
+      console.log({ type: 'MESSAGE_CREATED', message });
+    });
+  }
+  save(changes) {
+    this.channel.push("new", changes)
+  }
+}
+
+var pageChannel = new PageChannel(socket);
+
+pageChannel.save(pages[0])

@@ -3,6 +3,7 @@ defmodule ChannelsWeb.UserSocket do
 
   ## Channels
   channel "comments:*", Channels.CommentsChannel
+  channel "pages", Channels.PagesChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
