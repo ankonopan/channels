@@ -1,8 +1,11 @@
 defmodule Channels.PagesChannel do
   use ChannelsWeb, :channel
 
+  alias Channels.Model.Page, as: Page
+  alias Channels.Model.Repos.Page, as: PageRepo
+
   def join("pages", _params, socket) do
-    {:ok, pages} = Channels.Model.Repos.Page.all()
+    {:ok, pages} = PageRepo.all()
     response = %{
       pages: pages
     }
@@ -11,8 +14,8 @@ defmodule Channels.PagesChannel do
   end
 
   def handle_in("new", params, socket) do
-    %{changes: changes} = Channels.Model.Page.changeset(params)
-    {:ok, page} = Channels.Model.Repos.Page.create(changes)
+    %{changes: changes} = Page.changeset(params)
+    {:ok, page} = PageRepo.create(changes)
 
     broadcast!(socket, "page_new", %{page: page})
     {:reply, :ok, socket}
