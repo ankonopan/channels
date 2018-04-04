@@ -9,6 +9,11 @@ defmodule Channels.Model.Page do
     field :content, :string
   end
 
+  @doc """
+  Convert a Map into a changeset for MongoDB manipulation
+
+
+  """
   def changeset(page, params \\ %{}) do
     page
       |> cast(params, [:title, :meta_title, :content])
@@ -16,56 +21,132 @@ defmodule Channels.Model.Page do
   end
 
   @doc """
-  Update mongo db with given changeset
+  Create a record on given db
 
   ## Examples
-      iex> page = Channels.Model.Page.changeset(%Channels.Model.Page{}, %{title: "Muu", meta_title: "Muu", content: "Muu"})
-      iex> {status, record} = Channels.Model.Page.update_db(page.changes)
+      iex> fields = %{title: "Muu", meta_title: "Muu", content: "Muu"}
+      iex> %{changes: changes} = Channels.Model.Page.changeset(%Channels.Model.Page{}, fields)
+      iex> {status, _} = Channels.Model.Page.create(changes)
       iex> status
       :ok
   """
-  def update_db(changes) do
-    Mongo.find_one_and_replace(:mongo, "pages", %{}, changes, [return_document: :after, upsert: :true])
-      |> log("created new page")
+  def create(changes) do
+    response = Mongo.insert_one(:mongo, "pages", changes)
+    case response do
+      {:ok, %Mongo.InsertOneResult{inserted_id: id}} ->
+        Channels.Model.Page.find(id)
+      True ->
+        response
+    end
+  end
+
+  @doc """
+  Update mongo db with given changeset
+
+  ## Examples
+      iex> fields = %{title: "Muu", meta_title: "Muu", content: "Muu"}
+      iex> %{changes: changes} = Channels.Model.Page.changeset(%Channels.Model.Page{}, fields)
+      iex> {:ok, %{"id" => id}} = Channels.Model.Page.create(changes)
+      iex> {status, _} = Channels.Model.Page.update(id, %{"title" => "Sa"})
+      iex> status
+      :ok
+  """
+  def update(id, replacement) do
+    # This may not need to be done but it is done to run validations over the new data
+    {:ok, record} = Channels.Model.Page.find(id)
+    %{changes: changes} = changeset(%Channels.Model.Page{}, Map.merge(record, replacement))
+    query = %{_id: objectId(id)}
+    response = Mongo.update_one(:mongo, "pages", query, %{"$set": changes}, return_document: :after)
+    case response do
+      {:ok, _} ->
+        Channels.Model.Page.find(id)
+      _ ->
+        response
+    end
   end
 
   @doc """
   Find a document on the DB
 
   ## Examples
-      iex> {status, record} = Channels.Model.Page.find("5abce5baf343fdd1ff599ee0")
+      iex> fields = %{title: "Muu", meta_title: "Muu", content: "Muu"}
+      iex> %{changes: changes} = Channels.Model.Page.changeset(%Channels.Model.Page{}, fields)
+      iex> {_, %{"id" => id}} = Channels.Model.Page.create(changes)
+      iex>
+      iex> {status, _} = Channels.Model.Page.find(id)
       iex> status
       :ok
   """
   def find(id) do
-    cursor = Mongo.find(:mongo, "pages", %{_id: objectid(id)}, limit: 1)
+    cursor = Mongo.find(:mongo, "pages", %{_id: objectId(id)}, limit: 1)
     list = Enum.to_list(cursor)
-    if length(list) == 1 do
-      {:ok, hd(list)}
-    else
-      {:error, nil}
+    case length(list) do
+      1 ->
+        {:ok, list
+                |> hd
+                |> record_to_map}
+      any ->
+        {:error, "There are #{any} amount of pages"}
     end
   end
 
-  def objectid(id) do
+  def objectId(id) when Kernel.is_bitstring(id) do
     {_, idbin} = Base.decode16(id, case: :mixed)
     %BSON.ObjectId{value: idbin}
   end
 
+  def objectId(id) do id end
+
+  @doc """
+  Find all documents in given collection
+
+  ## Examples
+      iex> fields = %{title: "Muu", meta_title: "Muu", content: "Muu"}
+      iex> %{changes: changes} = Channels.Model.Page.changeset(%Channels.Model.Page{}, fields)
+      iex> Channels.Model.Page.create(changes)
+      iex>
+      iex> {status, _} = Channels.Model.Page.all()
+      iex> status
+      :ok
+  """
   def all() do
-    cursor = Mongo.find(:mongo, "pages", %{})
-    list = Enum.to_list(cursor)
-    {:ok, list}
+    list = Mongo.find(:mongo, "pages", %{}) |> Enum.to_list
+    {:ok, list |> Enum.map(&record_to_map/1)}
   end
 
-  def all(params \\ %{}, options \\ %{}) do
-    cursor = Mongo.find(:mongo, "pages", params, options)
-    list = Enum.to_list(cursor)
-    {:ok, list}
+  @doc """
+  Find all documents in given collection with given filters
+
+  ## Examples
+      iex> fields = %{title: "Muu", meta_title: "Muu", content: "Muu"}
+      iex> %{changes: changes} = Channels.Model.Page.changeset(%Channels.Model.Page{}, fields)
+      iex> {status, _} = Channels.Model.Page.create(changes)
+      iex> status
+      :ok
+      iex> {status, results} = Channels.Model.Page.all(%{title: "Muu"})
+      iex> status
+      :ok
+      iex> length(results)
+      1
+      iex> {status, []} = Channels.Model.Page.all(%{"title" => "Saaa"})
+      iex> status
+      :ok
+  """
+  def all(filters \\ %{}) do
+    list = Mongo.find(:mongo, "pages", filters) |> Enum.to_list
+    {:ok, list |> Enum.map(&record_to_map/1)}
   end
 
-  def log(response, message) do
-    Logger.info("#{message} #{inspect(response)}")
-    response
+  # def log(response, message) do
+  #   Logger.info("#{message} #{inspect(response)}")
+  #   response
+  # end
+
+
+  def record_to_map(record) do
+    %{"_id" => id} = record
+    record
+      |> Map.drop(["_id"])
+      |> Map.put("id", BSON.ObjectId.encode!(id))
   end
 end
