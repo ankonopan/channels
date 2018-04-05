@@ -1,11 +1,11 @@
 defmodule Channels.Model.Repos.SiteTest do
   use ChannelsWeb.ConnCase
-  @fields  %{name: "My Site", host: "www.somehost.com"}
+  @fields  %{name: "My Site", host: "www.somehost.com", id: "3sf393fa3f"}
+
   setup do
     Mongo.delete_many(Channels.Model.Repos.Site.connection, Channels.Model.Repos.Site.collection, %{})
     :ok
   end
-
 
   test "Create a record on given db" do
     %{changes: changes} = Channels.Model.Site.changeset(@fields)
