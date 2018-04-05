@@ -3,5 +3,13 @@ defmodule Channels.Model.Repos.Page do
   Provides Mongo Repository CRUD methods for Pages
 
   """
-  use Channels.Model.Utils.Repo, %{connection: :mongo, collection: "pages"}
+  use Channels.Model.Utils.Repo
+
+  def connection(site) do
+    :mongo
+  end
+
+  def collection(site) do
+    "#{Channels.Model.Site.collection_id(site)}_pages"
+  end
 end
