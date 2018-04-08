@@ -3,23 +3,25 @@ defmodule Channels.Model.Repo.SiteTest do
   use Channels.Model
   use ChannelsWeb.ConnCase
 
-  @fields  %{name: "My Site", host: "www.somehost.com", id: "3sf393fa3f"}
-  @empty_site %Type.Site{}
+
+  def create_site(fields) do
+    %{changes: changes} = Type.Site.changeset(%Type.Site{}, fields)
+    Repo.Site.create(changes)
+  end
 
   setup do
     Mongo.delete_many(Repo.Site.connection, Repo.Site.collection, %{})
-    :ok
+
+    %{fields: %{name: "My Site", host: "www.somehost.com", id: "3sf393fa3f"}}
   end
 
-  test "Create a record on given db" do
-    %{changes: changes} = @empty_site |> Type.Site.changeset(@fields)
-    {status, _} = Repo.Site.create(changes)
+  test "Create a record on given db", %{fields: fields} do
+    {status, _} = create_site(fields)
     assert status === :ok
   end
 
-  test "Update mongo db with given changeset" do
-    %{changes: changes} = @empty_site |> Type.Site.changeset(@fields)
-    {:ok, %{id: id}} = Repo.Site.create(changes)
+  test "Update mongo db with given changeset", %{fields: fields}  do
+    {:ok, %{id: id}} = create_site(fields)
 
     {:ok, record} = Repo.Site.find(id)
 
@@ -31,26 +33,23 @@ defmodule Channels.Model.Repo.SiteTest do
     assert name === "Sa"
   end
 
-  test "Find a document on the collection" do
-    %{changes: changes} = @empty_site |> Type.Site.changeset(@fields)
-    {_, %{id: id}} = Repo.Site.create(changes)
+  test "Find a document on the collection", %{fields: fields}  do
+    {_, %{id: id}} = create_site(fields)
 
     {status, _} = Repo.Site.find(id)
     assert status === :ok
   end
 
-  test "Find all documents in given collection" do
-    %{changes: changes} = @empty_site |> Type.Site.changeset(@fields)
-    Repo.Site.create(changes)
+  test "Find all documents in given collection", %{fields: fields}  do
+    create_site(fields)
 
     {status, list} = Repo.Site.all()
     assert status === :ok
     assert length(list) === 1
   end
 
-  test "Find all documents in given collection with given filters" do
-    %{changes: changes} = @empty_site |> Type.Site.changeset(@fields)
-    {status, _} = Repo.Site.create(changes)
+  test "Find all documents in given collection with given filters", %{fields: fields}  do
+    {status, _} = create_site(fields)
     assert status === :ok
     {status, results} = Repo.Site.all(%{name: "My Site"})
     assert status === :ok
