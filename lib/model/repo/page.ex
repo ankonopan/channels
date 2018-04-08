@@ -3,17 +3,16 @@ defmodule Channels.Model.Repo.Page do
   Provides Mongo Repository CRUD methods for Pages
 
   """
-  alias Channels.Model.DataType, as: Type
-
   alias __MODULE__
+  use Channels.Model
   use Channels.Model.Utils.Repo
 
-  def connection(site) do
+  def connection(_) do
     :mongo
   end
 
   def collection(site) do
-    "#{Channels.Model.DataType.Site.collection_id(site)}_pages"
+    "#{Type.Site.collection_id(site)}_pages"
   end
 
   defp record_to_map(record) do

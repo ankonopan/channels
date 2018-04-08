@@ -4,11 +4,7 @@ defmodule Channels.Model.Repo.User do
 
   """
   alias __MODULE__
-  @type result :: {:ok, map} | {:error, String.t} | {:ok, integer}
-  @type results :: {:ok, list(map)} | {:error, String.t}
-  @type user :: %Channels.Model.DataType.User{}
-
-  alias Channels.Model.DataType, as: Type
+  use Channels.Model
 
   @connection :mongo
   @collection "users"

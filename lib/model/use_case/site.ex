@@ -1,9 +1,6 @@
 defmodule Channels.Model.UseCase.Site do
   alias __MODULE__
-  alias Channels.Model.Repo
-  alias Channels.Model.DataType, as: Type
-
-  @type site :: %Type.Site{}
+  use Channels.Model
 
   @spec create(map) :: {:ok, site} | {:error, any}
   def create(params) do

@@ -3,7 +3,7 @@ defmodule Channels.Model.DataType.Site do
   use ChannelsWeb, :document
   require Logger
 
-  @type site :: __MODULE__
+  use Channels.Model
 
   @primary_key {:id, :binary_id, autogenerate: true}  # the id maps to uuid
   schema "sites" do

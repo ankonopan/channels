@@ -4,7 +4,7 @@ defmodule Channels.Model.DataType do
     use ChannelsWeb, :document
     require Logger
 
-    @type user :: __MODULE__
+    use Channels.Model
 
     @primary_key {:id, :binary_id, autogenerate: true}  # the id maps to uuid
     schema "users" do

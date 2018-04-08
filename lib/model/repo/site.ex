@@ -3,10 +3,8 @@ defmodule Channels.Model.Repo.Site do
   Provides Mongo Repository CRUD methods for Sites
 
   """
-  @type result :: {:ok, map} | {:error, String.t}
-  @type results :: {:ok, list(map)} | {:error, String.t}
-
-  alias Channels.Model.DataType, as: Type
+  alias __MODULE__
+  use Channels.Model
 
   @connection :mongo
   @collection "page"

@@ -1,9 +1,6 @@
 defmodule Channels.Model.UseCase.User do
   alias __MODULE__
-  alias Channels.Model.Repo
-  alias Channels.Model.DataType, as: Type
-
-  @type user :: %Type.User{}
+  use Channels.Model
 
   @spec create(map) :: {:ok, user} | {:error, any}
   def create(params) do

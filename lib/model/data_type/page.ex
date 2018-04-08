@@ -3,7 +3,7 @@ defmodule Channels.Model.DataType.Page do
   use ChannelsWeb, :document
   require Logger
 
-  @type page :: __MODULE__
+  use Channels.Model
 
   @primary_key {:id, :binary_id, autogenerate: true}  # the id maps to uuid
   schema "pages" do
@@ -66,8 +66,8 @@ defmodule Channels.Model.DataType.Page do
     page
       |> cast(params, @allowed_params, @optional_params)
       |> validate_required(@required_params)
-      |> validate_change(:locked_by_id, &Channels.Model.DataType.Validator.User.valid?/2)
-      |> validate_change(:creator_id, &Channels.Model.DataType.Validator.User.valid?/2)
-      |> validate_change(:updater_id, &Channels.Model.DataType.Validator.User.valid?/2)
+      |> validate_change(:locked_by_id, &Validator.User.valid?/2)
+      |> validate_change(:creator_id, &Validator.User.valid?/2)
+      |> validate_change(:updater_id, &Validator.User.valid?/2)
   end
 end

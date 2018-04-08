@@ -1,7 +1,7 @@
 defmodule Channels.Model.Repo.SiteTest do
+  alias __MODULE__
+  use Channels.Model
   use ChannelsWeb.ConnCase
-  alias Channels.Model.Repo
-  alias Channels.Model.DataType, as: Type
 
   @fields  %{name: "My Site", host: "www.somehost.com", id: "3sf393fa3f"}
   @empty_site %Type.Site{}
@@ -52,10 +52,10 @@ defmodule Channels.Model.Repo.SiteTest do
     %{changes: changes} = @empty_site |> Type.Site.changeset(@fields)
     {status, _} = Repo.Site.create(changes)
     assert status === :ok
-    {status, results} = Channels.Model.Repo.Site.all(%{name: "My Site"})
+    {status, results} = Repo.Site.all(%{name: "My Site"})
     assert status === :ok
     assert length(results) === 1
-    {status, []} = Channels.Model.Repo.Site.all(%{"name" => "Saaa"})
+    {status, []} = Repo.Site.all(%{"name" => "Saaa"})
     assert status === :ok
   end
 end
