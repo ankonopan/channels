@@ -66,8 +66,8 @@ defmodule Channels.Model.DataType.Page do
     page
       |> cast(params, @allowed_params, @optional_params)
       |> validate_required(@required_params)
-      |> validate_change(:locked_by_id, &Channels.Utils.User.Validator.valid?/2)
-      |> validate_change(:creator_id, &Channels.Utils.User.Validator.valid?/2)
-      |> validate_change(:updater_id, &Channels.Utils.User.Validator.valid?/2)
+      |> validate_change(:locked_by_id, &Channels.Model.DataType.Validator.User.valid?/2)
+      |> validate_change(:creator_id, &Channels.Model.DataType.Validator.User.valid?/2)
+      |> validate_change(:updater_id, &Channels.Model.DataType.Validator.User.valid?/2)
   end
 end

@@ -1,7 +1,7 @@
-defmodule Channels.Model.Repos.PageTest do
+defmodule Channels.Model.Repo.PageTest do
   alias Channels.Model.DataType.Page, as: PageType
   alias Channels.Model.DataType.Site, as: SiteType
-  alias Channels.Model.Repos.Page, as: PageRepo
+  alias Channels.Model.Repo.Page, as: PageRepo
 
   use ChannelsWeb.ConnCase
   @fields   %{title: "Muu", meta_title: "Muu", content: "Muu"}

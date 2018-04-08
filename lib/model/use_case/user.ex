@@ -1,6 +1,6 @@
 defmodule Channels.Model.UseCase.User do
   alias __MODULE__
-  alias Channels.Model.Repos
+  alias Channels.Model.Repo
   alias Channels.Model.DataType, as: Type
 
   @type user :: %Type.User{}
@@ -9,7 +9,7 @@ defmodule Channels.Model.UseCase.User do
   def create(params) do
     case Type.User.changeset(%Type.User{}, params) do
       %{valid?: true, changes: changes} ->
-        Repos.User.create(changes)
+        Repo.User.create(changes)
       %{valid?: false, errors:  errors} ->
         {:error, [{:user, errors}]}
     end

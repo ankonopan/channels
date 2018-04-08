@@ -1,4 +1,4 @@
-defmodule Channels.Model.Repos.Site do
+defmodule Channels.Model.Repo.Site do
   @moduledoc """
   Provides Mongo Repository CRUD methods for Sites
 

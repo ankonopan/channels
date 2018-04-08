@@ -1,6 +1,6 @@
 defmodule Channels.Model.UseCase.Page do
 
-  alias Channels.Model.Repos
+  alias Channels.Model.Repo
   alias Channels.Model.DataType, as: Type
 
   @type site :: %Type.Site{}
@@ -21,7 +21,7 @@ defmodule Channels.Model.UseCase.Page do
     new_page = Type.Page.changeset(%Type.Page{}, Map.merge(params, %{creator_id: creator.id}))
     case new_page do
       %{valid?: true, changes: changes} ->
-        Repos.Page.create(site, changes)
+        Repo.Page.create(site, changes)
       _ ->
         {:error, [{:page, "invalid"}]}
     end

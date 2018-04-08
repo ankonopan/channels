@@ -2,7 +2,7 @@ defmodule Channels.PagesChannel do
   use ChannelsWeb, :channel
 
   alias Channels.Model.DataType.Page, as: Page
-  alias Channels.Model.Repos.Page, as: PageRepo
+  alias Channels.Model.Repo.Page, as: PageRepo
 
   def join("pages", _params, socket) do
     {:ok, pages} = PageRepo.all()

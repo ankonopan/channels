@@ -1,4 +1,4 @@
-defmodule Channels.Model.Repos.User do
+defmodule Channels.Model.Repo.User do
   @moduledoc """
   Provides Mongo Repository CRUD methods for Pages
 
