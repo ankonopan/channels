@@ -22,20 +22,19 @@ defmodule Channels.Model.Repo.PageTest do
   end
 
   test "Update mongo db with given changeset" do
-    {:ok, %{"id" => id}} =  create_page(@site, @fields)
+    {:ok, %{id: id}} =  create_page(@site, @fields)
     {:ok, record} = @site |> Repo.Page.find(id)
 
-    new_field = %{"title" => "Sa"}
-    %{changes: changes} = Type.Page.changeset(%Type.Page{}, Map.merge(record, new_field))
+    %{changes: changes} = record |> Type.Page.changeset(%{"title" => "Sa"})
 
-    {status, %{"title" => title}} = @site |> Repo.Page.update(id, changes)
+    {status, %{title: title}} = @site |> Repo.Page.update(id, changes)
 
     assert status === :ok
     assert title === "Sa"
   end
 
   test "Find a document on the collection" do
-    {_, %{"id" => id}} = create_page(@site, @fields)
+    {_, %{id: id}} = create_page(@site, @fields)
 
     {status, _} = @site |> Repo.Page.find(id)
     assert status === :ok

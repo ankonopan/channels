@@ -18,8 +18,9 @@ defmodule Channels.Model do
       @type results :: {:ok, list(map)} | {:error, String.t}
 
       alias Channels.Model.DataType, as: Type
-      alias Channels.Model.Repo, as: Repo
+      alias Channels.Model.Repo
       alias Channels.Model.DataType.Validator, as: Validator
+      alias Channels.Model.Protocol
     end
   end
 end

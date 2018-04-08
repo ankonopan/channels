@@ -9,10 +9,9 @@ defmodule Channels.Model.DataType.Validator.User do
   """
   @spec valid?(atom, String.t) :: list
   def valid?(field, user_id) do
-    case Type.User.exists?(user_id) do
+    case Repo.User.exists?(user_id) do
       true -> []
       _ -> [{field , "User <#{user_id}> doesn't exist"}]
     end
   end
-
 end

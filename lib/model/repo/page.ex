@@ -5,7 +5,7 @@ defmodule Channels.Model.Repo.Page do
   """
   alias __MODULE__
   use Channels.Model
-  use Channels.Model.Utils.Repo
+  use Protocol.SiteRepository
 
   def connection(_) do
     :mongo

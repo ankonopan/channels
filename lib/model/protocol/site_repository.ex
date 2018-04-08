@@ -1,14 +1,13 @@
-defmodule Channels.Model.Utils.Repo do
+defmodule Channels.Model.Protocol.SiteRepository do
   @moduledoc """
   Provides a standard library for Mongo Repositories
 
   """
-  @type site :: %Channels.Model.DataType.Site{}
-  @type result :: {:ok, map} | {:error, String.t}
-  @type results :: {:ok, list(map)} | {:error, String.t}
+  use Channels.Model
 
   @callback connection(site) :: atom
   @callback collection(site) :: String.t
+  @callback record_to_map(map) :: map
 
   defmodule NonImplementedError do
     defexception message: "This function needs to be implemented on the including module"
@@ -18,6 +17,13 @@ defmodule Channels.Model.Utils.Repo do
     quote do
       @behaviour __MODULE__
       alias __MODULE__
+
+
+      @doc nil
+      @spec find(Repo.site, String.t) :: boolean
+      def exists?(site, id) do
+        {:ok, 1} === Mongo.count(connection(site), collection(site), %{_id: objectId(id)})
+      end
 
       @doc nil
       @spec find(Repo.site, String.t) :: Repo.result
@@ -87,22 +93,6 @@ defmodule Channels.Model.Utils.Repo do
       @doc nil
       @spec objectId(map) :: map
       defp objectId(id) do id end
-
-
-
-      # defp log(response, message) do
-      #   Logger.info("#{message} #{inspect(response)}")
-      #   response
-      # end
-
-      @doc nil
-      @spec record_to_map(map) :: map
-      defp record_to_map(record) do
-        %{"_id" => id} = record
-        record
-          |> Map.drop(["_id"])
-          |> Map.put("id", BSON.ObjectId.encode!(id))
-      end
     end
   end
 end
