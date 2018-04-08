@@ -3,6 +3,8 @@ defmodule Channels.Model.DataType.Page do
   use ChannelsWeb, :document
   require Logger
 
+  @type page :: __MODULE__
+
   @primary_key {:id, :binary_id, autogenerate: true}  # the id maps to uuid
   schema "pages" do
     field :title,       :string
@@ -59,8 +61,9 @@ defmodule Channels.Model.DataType.Page do
   @optional_params [:meta_title, :meta_keywords, :meta_description]
   @required_params [:title, :content, :creator_id]
 
-  def changeset(params) do
-    %Page{}
+  @spec changeset(page, map) :: page
+  def changeset(page \\ %Page{}, params) do
+    page
       |> cast(params, @allowed_params, @optional_params)
       |> validate_required(@required_params)
       |> validate_change(:locked_by_id, &Channels.Utils.User.Validator.valid?/2)

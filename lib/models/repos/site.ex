@@ -6,6 +6,8 @@ defmodule Channels.Model.Repos.Site do
   @type result :: {:ok, map} | {:error, String.t}
   @type results :: {:ok, list(map)} | {:error, String.t}
 
+  alias Channels.Model.DataType, as: Type
+
   @connection :mongo
   @collection "page"
 
@@ -86,9 +88,10 @@ defmodule Channels.Model.Repos.Site do
   @doc nil
   @spec record_to_map(map) :: map
   defp record_to_map(record) do
-    %{"_id" => id} = record
     record
-      |> Map.drop(["_id"])
-      |> Map.put("id", BSON.ObjectId.encode!(id))
+      |> Map.put("id", BSON.ObjectId.encode!(record["_id"]))
+      |> Channels.Utils.Map.Transformations.atomize_keys
+      # This revert the order of the arguments: look at http://shulhi.com/piping-to-second-argument-in-elixir/
+      |> (&Map.merge(%Type.Site{}, &1)).()
   end
 end

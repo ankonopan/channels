@@ -8,7 +8,7 @@ defmodule Channels.Model.Repos.PageTest do
   @site     %SiteType{id: "43lkj34", name: "Some Site", host: "www.someplace.com"}
 
   def create_page(site, fields) do
-    %{changes: changes} = PageType.changeset(fields)
+    %{changes: changes} = PageType.changeset(%PageType{}, fields)
     site |> PageRepo.create(changes)
   end
 
@@ -24,10 +24,10 @@ defmodule Channels.Model.Repos.PageTest do
 
   test "Update mongo db with given changeset" do
     {:ok, %{"id" => id}} =  create_page(@site, @fields)
-    {status, record} = @site |> PageRepo.find(id)
+    {:ok, record} = @site |> PageRepo.find(id)
 
     new_field = %{"title" => "Sa"}
-    %{changes: changes} = PageType.changeset(Map.merge(record, new_field))
+    %{changes: changes} = PageType.changeset(%PageType{}, Map.merge(record, new_field))
 
     {status, %{"title" => title}} = @site |> PageRepo.update(id, changes)
 

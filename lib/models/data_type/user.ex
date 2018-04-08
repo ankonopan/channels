@@ -3,6 +3,8 @@ defmodule Channels.Model.DataType.User do
   use ChannelsWeb, :document
   require Logger
 
+  @type user :: __MODULE__
+
   @primary_key {:id, :binary_id, autogenerate: true}  # the id maps to uuid
   schema "users" do
     field :name,  :string
@@ -17,6 +19,7 @@ defmodule Channels.Model.DataType.User do
   @allowed_params [:name, :email]
   @required_params [:name, :email]
 
+  @spec changeset(user, map) :: user
   def changeset(user \\ %User{}, params) do
     user
       |> cast(params, @allowed_params)

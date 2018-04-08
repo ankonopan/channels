@@ -3,6 +3,8 @@ defmodule Channels.Model.DataType.Site do
   use ChannelsWeb, :document
   require Logger
 
+  @type site :: __MODULE__
+
   @primary_key {:id, :binary_id, autogenerate: true}  # the id maps to uuid
   schema "sites" do
     field :name, :string
@@ -19,8 +21,9 @@ defmodule Channels.Model.DataType.Site do
   @allowed_params [:name, :host, :aliases]
   @required_params [:name, :host]
 
-  def changeset(params) do
-    %Site{}
+  @spec changeset(site, map) :: site
+  def changeset(site\\ %Site{}, params) do
+    site
       |> cast(params, @allowed_params)
       |> validate_required(@required_params)
   end
