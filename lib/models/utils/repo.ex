@@ -3,7 +3,7 @@ defmodule Channels.Model.Utils.Repo do
   Provides a standard library for Mongo Repositories
 
   """
-  @type site :: %Channels.Model.Site{}
+  @type site :: %Channels.Model.DataType.Site{}
   @type result :: {:ok, map} | {:error, String.t}
   @type results :: {:ok, list(map)} | {:error, String.t}
 

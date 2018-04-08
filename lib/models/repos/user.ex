@@ -6,7 +6,9 @@ defmodule Channels.Model.Repos.User do
   alias __MODULE__
   @type result :: {:ok, map} | {:error, String.t} | {:ok, integer}
   @type results :: {:ok, list(map)} | {:error, String.t}
-  @type user :: %Channels.Model.User{}
+  @type user :: %Channels.Model.DataType.User{}
+
+  alias Channels.Model.DataType.User, as: UserType
 
   @connection :mongo
   @collection "users"
@@ -98,6 +100,6 @@ defmodule Channels.Model.Repos.User do
       |> Map.put("id", BSON.ObjectId.encode!(record["_id"]))
       |> Channels.Utils.Map.Transformations.atomize_keys
       # This revert the order of the arguments: look at http://shulhi.com/piping-to-second-argument-in-elixir/
-      |> (&Map.merge(%Channels.Model.User{}, &1)).()
+      |> (&Map.merge(%UserType{}, &1)).()
   end
 end

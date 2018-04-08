@@ -8,20 +8,20 @@ defmodule Channels.Model.Repos.SiteTest do
   end
 
   test "Create a record on given db" do
-    %{changes: changes} = Channels.Model.Site.changeset(@fields)
+    %{changes: changes} = Channels.Model.DataType.Site.changeset(@fields)
     {status, _} = Channels.Model.Repos.Site.create(changes)
     assert status === :ok
   end
 
   test "Update mongo db with given changeset" do
-    %{changes: changes} = Channels.Model.Site.changeset(@fields)
+    %{changes: changes} = Channels.Model.DataType.Site.changeset(@fields)
     {:ok, %{"id" => id}} = Channels.Model.Repos.Site.create(changes)
 
     {status, record} = Channels.Model.Repos.Site.find(id)
 
     new_field = %{"name" => "Sa"}
 
-    %{changes: changes} = Channels.Model.Site.changeset(Map.merge(record, new_field))
+    %{changes: changes} = Channels.Model.DataType.Site.changeset(Map.merge(record, new_field))
 
     {status, %{"name" => name}} = Channels.Model.Repos.Site.update(id, changes)
 
@@ -30,7 +30,7 @@ defmodule Channels.Model.Repos.SiteTest do
   end
 
   test "Find a document on the collection" do
-    %{changes: changes} = Channels.Model.Site.changeset(@fields)
+    %{changes: changes} = Channels.Model.DataType.Site.changeset(@fields)
     {_, %{"id" => id}} = Channels.Model.Repos.Site.create(changes)
 
     {status, _} = Channels.Model.Repos.Site.find(id)
@@ -38,7 +38,7 @@ defmodule Channels.Model.Repos.SiteTest do
   end
 
   test "Find all documents in given collection" do
-    %{changes: changes} = Channels.Model.Site.changeset(@fields)
+    %{changes: changes} = Channels.Model.DataType.Site.changeset(@fields)
     Channels.Model.Repos.Site.create(changes)
 
     {status, list} = Channels.Model.Repos.Site.all()
@@ -47,7 +47,7 @@ defmodule Channels.Model.Repos.SiteTest do
   end
 
   test "Find all documents in given collection with given filters" do
-    %{changes: changes} = Channels.Model.Site.changeset(@fields)
+    %{changes: changes} = Channels.Model.DataType.Site.changeset(@fields)
     {status, _} = Channels.Model.Repos.Site.create(changes)
     assert status === :ok
     {status, results} = Channels.Model.Repos.Site.all(%{name: "My Site"})

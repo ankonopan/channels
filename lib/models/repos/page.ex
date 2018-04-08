@@ -10,6 +10,6 @@ defmodule Channels.Model.Repos.Page do
   end
 
   def collection(site) do
-    "#{Channels.Model.Site.collection_id(site)}_pages"
+    "#{Channels.Model.DataType.Site.collection_id(site)}_pages"
   end
 end

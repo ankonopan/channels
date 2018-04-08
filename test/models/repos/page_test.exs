@@ -1,15 +1,19 @@
 defmodule Channels.Model.Repos.PageTest do
+  alias Channels.Model.DataType.Page, as: PageType
+  alias Channels.Model.DataType.Site, as: SiteType
+  alias Channels.Model.Repos.Page, as: PageRepo
+
   use ChannelsWeb.ConnCase
   @fields   %{title: "Muu", meta_title: "Muu", content: "Muu"}
-  @site     %Channels.Model.Site{id: "43lkj34", name: "Some Site", host: "www.someplace.com"}
+  @site     %SiteType{id: "43lkj34", name: "Some Site", host: "www.someplace.com"}
 
   def create_page(site, fields) do
-    %{changes: changes} = Channels.Model.Page.changeset(fields)
-    site |> Channels.Model.Repos.Page.create(changes)
+    %{changes: changes} = PageType.changeset(fields)
+    site |> PageRepo.create(changes)
   end
 
   setup do
-    Mongo.delete_many(:mongo, Channels.Model.Repos.Page.collection(@site), %{})
+    Mongo.delete_many(:mongo, PageRepo.collection(@site), %{})
     :ok
   end
 
@@ -20,12 +24,12 @@ defmodule Channels.Model.Repos.PageTest do
 
   test "Update mongo db with given changeset" do
     {:ok, %{"id" => id}} =  create_page(@site, @fields)
-    {status, record} = @site |> Channels.Model.Repos.Page.find(id)
+    {status, record} = @site |> PageRepo.find(id)
 
     new_field = %{"title" => "Sa"}
-    %{changes: changes} = Channels.Model.Page.changeset(Map.merge(record, new_field))
+    %{changes: changes} = PageType.changeset(Map.merge(record, new_field))
 
-    {status, %{"title" => title}} = @site |> Channels.Model.Repos.Page.update(id, changes)
+    {status, %{"title" => title}} = @site |> PageRepo.update(id, changes)
 
     assert status === :ok
     assert title === "Sa"
@@ -34,14 +38,14 @@ defmodule Channels.Model.Repos.PageTest do
   test "Find a document on the collection" do
     {_, %{"id" => id}} = create_page(@site, @fields)
 
-    {status, _} = @site |> Channels.Model.Repos.Page.find(id)
+    {status, _} = @site |> PageRepo.find(id)
     assert status === :ok
   end
 
   test "Find all documents in given collection" do
     create_page(@site, @fields)
 
-    {status, list} = @site |> Channels.Model.Repos.Page.all()
+    {status, list} = @site |> PageRepo.all()
     assert status === :ok
     assert length(list) === 1
   end
@@ -49,10 +53,10 @@ defmodule Channels.Model.Repos.PageTest do
   test "Find all documents in given collection with given filters" do
     {status, _} =  create_page(@site, @fields)
     assert status === :ok
-    {status, results} = @site |> Channels.Model.Repos.Page.all(%{title: "Muu"})
+    {status, results} = @site |> PageRepo.all(%{title: "Muu"})
     assert status === :ok
     assert length(results) === 1
-    {status, []} = @site |> Channels.Model.Repos.Page.all(%{"title" => "Saaa"})
+    {status, []} = @site |> PageRepo.all(%{"title" => "Saaa"})
     assert status === :ok
   end
 end

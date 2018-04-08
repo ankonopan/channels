@@ -1,4 +1,4 @@
-defmodule Channels.Model.Site do
+defmodule Channels.Model.DataType.Site do
   alias __MODULE__
   use ChannelsWeb, :document
   require Logger

@@ -1,4 +1,4 @@
-defmodule Channels.Model.PageTest do
+defmodule Channels.Model.DataType.PageTest do
   use ChannelsWeb.ConnCase
 
   setup do
@@ -6,5 +6,5 @@ defmodule Channels.Model.PageTest do
     :ok
   end
 
-  doctest Channels.Model.Page
+  doctest Channels.Model.DataType.Page
 end
