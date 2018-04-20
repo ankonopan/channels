@@ -4,6 +4,8 @@ defmodule Channels.Model.DataType.Page do
   require Logger
 
   use Channels.Model
+  import Type.Utils.Record
+
 
   @primary_key {:id, :binary_id, autogenerate: true}  # the id maps to uuid
   schema "pages" do
@@ -37,7 +39,7 @@ defmodule Channels.Model.DataType.Page do
     #   elements: [
     #     %Element{type: "Issue", value: ""}
     #     ]}
-    field :cells, {:array, :list}
+    embeds_many :cells, Type.Cell
 
 
     field :meta_title,        :string
@@ -57,7 +59,7 @@ defmodule Channels.Model.DataType.Page do
 
 
   """
-  @allowed_params [:title, :content, :creator_id]
+  @allowed_params [:title, :content, :creator_id, :locked_by_id, :updater_id, :tags]
   @optional_params [:meta_title, :meta_keywords, :meta_description]
   @required_params [:title, :content, :creator_id]
 
@@ -65,9 +67,40 @@ defmodule Channels.Model.DataType.Page do
   def changeset(page \\ %Page{}, params) do
     page
       |> cast(params, @allowed_params, @optional_params)
+      |> cast_embed(:cells, required: false)
       |> validate_required(@required_params)
       |> validate_change(:locked_by_id, &Validator.User.valid?/2)
       |> validate_change(:creator_id, &Validator.User.valid?/2)
       |> validate_change(:updater_id, &Validator.User.valid?/2)
   end
+
+  @doc """
+  Converts a change set in a valid Map that can be stored in Mongo DB
+  It also get all embeds decasted so are valid Maps that can be stores in Mongo DB
+
+  """
+  def dump(changeset) do
+    %{changes: new_changes} = changeset
+    new_changes
+      |> update_timestamps
+      |> Map.replace!(:cells, dump_cells(changeset))
+  end
+
+  @doc """
+  Goes through all cells and get the decasted version that can be stored in Mongo DB
+  """
+  def dump_cells(changeset) do
+    {:changes, cells} = fetch_field(changeset, :cells)
+    Enum.map(cells, &Type.Cell.decast/1)
+  end
+
+  @doc """
+  Goes through all embeds and collects all errors from a changeset
+
+  """
+  def errors(changeset) do
+    # Traverse all embeded fields and get errors from those fields
+    True
+  end
 end
+

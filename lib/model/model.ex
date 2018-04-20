@@ -13,6 +13,8 @@ defmodule Channels.Model do
       @type site :: DataType.Site
       @type page :: DataType.Page
       @type user :: DataType.User
+      @type cell :: DataType.Cell
+      @type element :: DataType.Element
 
       @type result :: {:ok, map} | {:error, String.t} | {:ok, integer}
       @type results :: {:ok, list(map)} | {:error, String.t}
@@ -21,6 +23,7 @@ defmodule Channels.Model do
       alias Channels.Model.Repo
       alias Channels.Model.DataType.Validator, as: Validator
       alias Channels.Model.Protocol
+      alias Channels.Model.UseCase
     end
   end
 end
